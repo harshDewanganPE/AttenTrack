@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,3 +15,5 @@ Route::get('/hello' , function(){
 });
 
 ROute::apiResource('students', StudentController::class );
+
+ROute::apiResource('courses', CourseController::class );

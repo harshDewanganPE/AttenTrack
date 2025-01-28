@@ -34,6 +34,15 @@ class StudentController extends Controller
             'year' => 'required|numeric|min:0',
         ]);
 
+        $existingStudent = Student::where('enrollment_number', $valData['enrollment_number'])->first();
+
+        if ($existingStudent) {
+            return response()->json([
+                'message' => 'Student with this enrollment number already exists.',
+                'student' => $existingStudent,
+            ], 409); // 409 Conflict HTTP status
+        }
+
         $stud = Student::create($valData);
 
         return response()->json($stud, 201);

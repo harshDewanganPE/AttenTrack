@@ -11,9 +11,7 @@ class CourseController extends Controller
     public function index()
     {
         return response()->json(Course::all(), 200);
-        //
     }
-
 
     public function store(Request $req)
     {
@@ -36,29 +34,26 @@ class CourseController extends Controller
         return response()->json($stud, 201);
     }
 
-
     public function show(string $id)
     {
-        //
+        $stud = Course::find($id);
+        if (!$stud) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+        return response()->json($stud, 200);
     }
-
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
+    // public function update(Request $request, string $id)
+    // {
+    //     //
+    // }
 
     public function destroy(string $id)
     {
-
         $stud =  Course::find($id);
         if (!$stud) {
             return response()->json(['message' => 'Product not found'], 404);
         }
         $stud->delete();
         return response()->json(['message' => 'Student info deleted successfully'], 200);
-
-        //
     }
 }

@@ -12,16 +12,20 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::get('/hello' , function(){
+Route::get('/hello', function () {
     return response()->json(['message' => 'Hello world! harsh']);
 });
 
-ROute::apiResource('students', StudentController::class );
+Route::apiResource('students', StudentController::class);
 
-ROute::apiResource('courses', CourseController::class );
+Route::apiResource('courses', CourseController::class);
 
-ROute::apiResource('attendances', AttendanceController::class );
+Route::apiResource('attendances', AttendanceController::class);
 
 Route::get('/attendances/{student_id}/{course_id}', [AttendanceController::class, 'presentForCourse']);
 
 Route::post('/attendances/create', [AttendanceController::class, 'createAttendance']);
+
+
+
+

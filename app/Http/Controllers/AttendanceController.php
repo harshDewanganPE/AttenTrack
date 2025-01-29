@@ -9,22 +9,55 @@ use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         return response()->json(Attendance::all(), 200);
-        //
     }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id' => 'required|integer|exists:students,id',
+            'course_id' => 'required|integer|exists:courses,id',
+            'attendance_date' => 'required|date',
+            'status' => 'required|in:Present,Absent',
+        ]);
+
+        try {
+
+            DB::insert(
+                "INSERT INTO attendances (student_id, course_id, attendance_date, status, created_at, updated_at) 
+                 VALUES (?, ?, ?, ?, NOW(), NOW())",
+                [
+                    $validated['student_id'],
+                    $validated['course_id'],
+                    $validated['attendance_date'],
+                    $validated['status']
+                ]
+            );
+
+            return response()->json([
+                'message' => 'Attendance record created successfully',
+                'data' => $validated
+            ], 201);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => 'Failed to create attendance record',
+                'details' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
 
     public function presentForCourse($student_id, $course_id)
     {
-
         $sqlq = "
             SELECT attendance_date, status 
             FROM attendances 
-            WHERE student_id = ? AND course_id = ?";
+            WHERE student_id = ? AND course_id = ?
+            ";
 
         $attendances = DB::select(
             $sqlq,
@@ -59,7 +92,7 @@ class AttendanceController extends Controller
 
     public function createAttendance(Request $request)
     {
-        // Validate the incoming data
+        
         $validated = $request->validate([
             'course_code' => 'required|string|exists:courses,course_code',
             'attendance_date' => 'required|date',
@@ -70,14 +103,14 @@ class AttendanceController extends Controller
         ]);
 
         try {
-            // Fetch the course ID using the course code
+            
             $course = DB::table('courses')->where('course_code', $validated['course_code'])->first();
             if (!$course) {
                 return response()->json(['error' => 'Invalid course code.'], 400);
             }
             $course_id = $course->id;
 
-            // Process Present Enrollment Numbers
+            
             foreach ($validated['present_enrollment_number'] as $enrollment_number) {
                 $student = DB::table('students')->where('enrollment_number', $enrollment_number)->first();
                 if ($student) {
@@ -90,7 +123,7 @@ class AttendanceController extends Controller
                 }
             }
 
-            // Process Absent Enrollment Numbers
+            
             foreach ($validated['absent_enrollment_number'] as $enrollment_number) {
                 $student = DB::table('students')->where('enrollment_number', $enrollment_number)->first();
                 if ($student) {
@@ -103,11 +136,7 @@ class AttendanceController extends Controller
                 }
             }
 
-            echo "hojkjk jkjkjk ";
-
             return response()->json(['message' => 'Attendance records created successfully.', 'course_id' => $course_id], 201);
-
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to create attendance records.',
@@ -116,3 +145,6 @@ class AttendanceController extends Controller
         }
     }
 }
+
+
+

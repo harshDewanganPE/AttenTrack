@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\AttendanceController;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +19,9 @@ Route::get('/hello' , function(){
 ROute::apiResource('students', StudentController::class );
 
 ROute::apiResource('courses', CourseController::class );
+
+ROute::apiResource('attendances', AttendanceController::class );
+
+Route::get('/attendances/{student_id}/{course_id}', [AttendanceController::class, 'presentForCourse']);
+
+Route::post('/attendances/create', [AttendanceController::class, 'createAttendance']);

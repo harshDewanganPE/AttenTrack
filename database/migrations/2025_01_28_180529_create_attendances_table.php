@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendance', function (Blueprint $table) {
-            $table->id('attendance_id'); // AUTO_INCREMENT primary key
+        Schema::create('attendances', function (Blueprint $table) {
+            $table->id(); // AUTO_INCREMENT primary key
             $table->unsignedBigInteger('student_id'); // Foreign key to Students table
             $table->unsignedBigInteger('course_id'); // Foreign key to Courses table
             $table->date('attendance_date'); // Attendance date

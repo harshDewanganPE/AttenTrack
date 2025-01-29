@@ -70,7 +70,7 @@
 
 #### Get course by id
 ```http
-  GET /api/courses/
+  GET /api/courses/4
 ```
 
 #### Add Course
